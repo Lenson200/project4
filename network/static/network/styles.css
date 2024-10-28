@@ -1,0 +1,33 @@
+.like-btn, .follow-btn {
+    background-color: #f7f3f3;
+    border: 1px solid rgb(0, 238, 255)(0, 102, 255);
+    color: #1d1b1b;
+    border-radius: 50%; /* Makes the button circular */
+    padding: 10px; /* Adjust padding as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right:5x; /* Add spacing between buttons */
+}
+
+.like-btn i, .follow-btn i {
+    font-size: 16px; /* Adjust icon size as needed */
+}
+
+.follow-btn {
+    border-radius: 5px; /* Rectangular button */
+    padding: 5px 10px; /* Adjust padding for follow button */
+    border-color: blue;
+    color: blue;
+}
+
+.unfollow-btn {
+    background-color: blue;
+    color: white;
+}
+#pic {
+    max-width: 200px; 
+    max-height: 200px; 
+    width: auto; 
+    height: auto; 
+}

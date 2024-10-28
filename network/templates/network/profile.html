@@ -1,0 +1,51 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'network/addpost.js' %}"></script>
+{% endblock %}
+
+{% if current_user.is_authenticated %}
+    <h1>{{ profile_user.username }}'s Profile</h1>
+    {% if profile_user.profileimage %}
+    <img id="pic" src="{{ profile_user.profileimage.image.url }}" alt="Profile Image">
+{% else %}
+    <p>No profile image available</p>
+{% endif %}
+    <div class="ml-5" style="display: inline-block;">
+        <div class="border border-secondary rounded p-2" style="display: inline-block;">Followers: {{ followers }}</div>
+        <div class="border border-secondary rounded ml-2 p-2" style="display: inline-block;">Following: {{ following }}</div>
+    </div>
+    <!-- Image upload form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image">
+        <button type="submit">Upload Image</button>
+    </form>
+    <div class="p-3">
+        {% for post in page_obj %} 
+            <div class="border border-secondary rounded p-3 mt-2">
+                <h4><a href="{% url 'profile' post.user.id %}">{{ post.user.username }}</a></h4>
+                <div>{{ post.post }}</div>
+                <div>{{ post.timestamp }}</div>
+            </div>
+        {% empty %}
+            <li>No posts available</li>
+        {% endfor %}
+    
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+    </div>
+    
+{% else %}
+    <h1>No Profile Yet</h1>
+{% endif %}
+
+{% endblock %}

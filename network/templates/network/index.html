@@ -1,0 +1,51 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% load user_filter %}
+
+{% block body %}
+<h2>Welcome</h2>
+<div class="border border-secondary rounded p-3">
+    <h6>New Post</h6>
+    {% if user.is_authenticated %}
+    <form id="new-post-form" action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <textarea class="form-control mb-2" id="new-post-text" name="post" placeholder="What's on your mind?"></textarea>
+        <input type="submit" class="btn btn-primary" id="new-post-send" value="Post"/>
+    </form>
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">log in</a> to post.</p>
+    {% endif %}
+    <div>
+        {% for post in page_obj %}
+        <div class="border border-secondary rounded p-3 mt-2">
+            <img id="pic" src="{{ post.profile_image }}" alt="Profile Image">
+            <h4><a href="#">{{ post.user }}</a></h4>
+            <div id="post-{{post.id}}">{{ post.post }}</div>
+            {% if user.is_authenticated %}
+                {% if post.user.id == user.id %}    
+                    <div id="edit" onclick="edit('{{ post.id }}')" class="text-primary">Edit</div>
+                {% endif %}
+                <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{post.id}}" data-post-id="{{post.id}}">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="btn mr-1 d-inline-block follow-btn" id="follow-btn-{{post.user.id}}" data-user-id="{{post.user.id}}">
+                    {% if user|user_is_following:post.id %} Unfollow {% else %} Follow {% endif %}
+                </button>
+            {% endif %}
+            <div id="like-count-{{post.id}}" class="d-inline-block">{{ post.likes }}</div>
+            <div>{{ post.timestamp }}</div>
+        </div>
+    {% empty %}
+        <li>No posts available</li>
+    {% endfor %}
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+    {% endif %}
+    
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+    {% endif %}
+    
+</div>
+{% endblock %}
