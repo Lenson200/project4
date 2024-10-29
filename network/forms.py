@@ -1,7 +1,7 @@
 from django import forms
-from .models import ProfileImage
+from .models import UserProfile
 
 class ProfileImageForm(forms.ModelForm):
     class Meta:
-        model = ProfileImage
+        model = UserProfile
         fields = ['image']

@@ -7,19 +7,19 @@
     <script type="text/javascript" src="{% static 'network/addpost.js' %}"></script>
 {% endblock %}
 
-{% if current_user.is_authenticated %}
-    <h1>{{ profile_user.username }}'s Profile</h1>
-    {% if profile_user.profileimage %}
-    <img id="pic" src="{{ profile_user.profileimage.image.url }}" alt="Profile Image">
+{% if user.is_authenticated %}
+<h1>{{ profile_user.username }}'s Profile</h1>
+{% if profile_image %}
+<img id="pic" src="{{ profile_image }}" alt="Profile Image">
 {% else %}
-    <p>No profile image available</p>
+<p>No profile image available</p>
 {% endif %}
     <div class="ml-5" style="display: inline-block;">
         <div class="border border-secondary rounded p-2" style="display: inline-block;">Followers: {{ followers }}</div>
         <div class="border border-secondary rounded ml-2 p-2" style="display: inline-block;">Following: {{ following }}</div>
     </div>
-    <!-- Image upload form -->
-    <form method="post" enctype="multipart/form-data">
+
+    <form method="post" action="{% url 'upload_profile_image' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="image">
         <button type="submit">Upload Image</button>
@@ -28,7 +28,7 @@
         {% for post in page_obj %} 
             <div class="border border-secondary rounded p-3 mt-2">
                 <h4><a href="{% url 'profile' post.user.id %}">{{ post.user.username }}</a></h4>
-                <div>{{ post.post }}</div>
+                <div>{{ post.content }}</div>
                 <div>{{ post.timestamp }}</div>
             </div>
         {% empty %}

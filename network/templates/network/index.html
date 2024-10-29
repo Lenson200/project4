@@ -18,7 +18,7 @@
     <div>
         {% for post in page_obj %}
         <div class="border border-secondary rounded p-3 mt-2">
-            <img id="pic" src="{{ post.profile_image }}" alt="Profile Image">
+            <img id="pic" src="{{ profile_image }}" alt="Profile Image">
             <h4><a href="#">{{ post.user }}</a></h4>
             <div id="post-{{post.id}}">{{ post.post }}</div>
             {% if user.is_authenticated %}
