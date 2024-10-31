@@ -1,7 +1,6 @@
 {% extends "network/layout.html" %}
 {% load static %}
 {% load user_filter %}
-
 {% block body %}
 <h2>Welcome</h2>
 <div class="border border-secondary rounded p-3">
@@ -18,8 +17,8 @@
     <div>
         {% for post in page_obj %}
         <div class="border border-secondary rounded p-3 mt-2">
-            <img id="pic" src="{{ profile_image }}" alt="Profile Image">
-            <h4><a href="#">{{ post.user }}</a></h4>
+            <img id="pic" src="{{ post.profile_image }}" alt="Profile Image">
+            <h4><a href="{% url 'profile' post.user%}">{{ post.user }}</a></h4>
             <div id="post-{{post.id}}">{{ post.post }}</div>
             {% if user.is_authenticated %}
                 {% if post.user.id == user.id %}    
@@ -35,17 +34,18 @@
             <div id="like-count-{{post.id}}" class="d-inline-block">{{ post.likes }}</div>
             <div>{{ post.timestamp }}</div>
         </div>
-    {% empty %}
-        <li>No posts available</li>
-    {% endfor %}
-    
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">next</a>
-    {% endif %}
-    
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-    {% endif %}
-    
+        {% empty %}
+            <li>No posts available</li>
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+        
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        
+    </div>
 </div>
 {% endblock %}

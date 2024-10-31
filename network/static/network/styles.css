@@ -1,22 +1,21 @@
 .like-btn, .follow-btn {
     background-color: #f7f3f3;
-    border: 1px solid rgb(0, 238, 255)(0, 102, 255);
-    color: #1d1b1b;
+    border: 1px solid rgb(0, 102, 255); 
     border-radius: 50%;
-    padding: 10px; 
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right:5x;
+    margin-right: 5px;
 }
 
 .like-btn i, .follow-btn i {
-    font-size: 16px; 
+    font-size: 16px;
 }
 
 .follow-btn {
-    border-radius: 5px; 
-    padding: 5px 10px; 
+    border-radius: 5px;
+    padding: 5px 10px;
     border-color: blue;
     color: blue;
 }

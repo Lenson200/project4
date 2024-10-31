@@ -24,15 +24,18 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     like = models.ManyToManyField(User, blank=True, related_name="liked_user")
     images=models.ImageField(upload_to='post_images/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']), validate_image_size])
-
+    
     def serialize(self):
+        user_profile = self.user.profile
+        profile_image_url = user_profile.image.url if user_profile.image else None
         return {
             "id": self.id,
             "user": self.user.username,
             "post": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %H:%M:%S"),
             "likes": self.like.count(),
-           "post_image": self.images.url if self.images else None
+           "post_image": self.images.url if self.images else None,
+           "profile_image": profile_image_url
         }
     
 class Like(models.Model):

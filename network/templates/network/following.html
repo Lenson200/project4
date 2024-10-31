@@ -28,7 +28,7 @@
                         <i class="fas fa-heart"></i>
                     </button>
                     <button class="btn mr-1 d-inline-block follow-btn" id="follow-btn-{{post.user.id}}" data-user-id="{{post.user.id}}">
-                        {% if user|user_is_following:post.user %} Unfollow {% else %} Follow {% endif %}
+                             Unfollow 
                     </button>
                     <span id="followers-count-{{post.user.id}}" class="d-inline-block">{{ post.user.followers.count }}</span>
                 {% endif %}
