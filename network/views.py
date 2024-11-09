@@ -157,6 +157,7 @@ def toggle_follow(request, username):
     profile_user = get_object_or_404(User, username=username)
 
     if request.user != profile_user:
+        
         follow_instance = Follow.objects.filter(follower=request.user, following=profile_user).first()
 
         if follow_instance:
@@ -168,18 +169,19 @@ def toggle_follow(request, username):
 
         # Return a JSON response indicating success
         return JsonResponse({"success": True, "is_following": is_following})
-    
-    return JsonResponse({"success": False, "message": "You cannot follow yourself."}, status=400)
+    return redirect('profile', username=profile_user.username)   
 
 @csrf_exempt
 @login_required
 def edit(request, post_id):
     try:
         post = Post.objects.get(id=post_id)
+
         # Check if the logged-in user is the owner of the post
         if post.user != request.user:
             return JsonResponse({"error": "You are not authorized to edit this post."}, status=403)
 
+        # Handle the POST request for editing the post
         if request.method == "POST":
             data = json.loads(request.body)
             if "post" in data:

@@ -55,12 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 editBox.style.display = 'none';
                 saveButton.style.display = 'none';
                 cancelButton.style.display = 'none';
+                console.log(data)
             })
             .catch(error => console.log('Error:', error));
         });
 
         // Event listener for "Cancel" button click
         cancelButton.addEventListener('click', () => {
+            // Restore original content and hide textarea/buttons
             postContent.innerHTML = originalText;
             editButton.style.display = 'block';
             editBox.style.display = 'none';
@@ -102,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
         followBtn.addEventListener('click', () => {
             const isFollowing = followBtn.textContent.trim() === 'Unfollow';
 
-            fetch(`/profile ${username}/follow/`, {
-                method: 'POST',
+            fetch(`/profile/${username}/follow/`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
@@ -128,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize like functionality for each post
     document.querySelectorAll('.follow-btn').forEach(followButton => {
         const username = followButton.getAttribute('data-username');
-        follow(username);  // Ensure the correct username is passed
+        follow(username); 
     });
     // Helper function to get the CSRF token
     function getCookie(name) {

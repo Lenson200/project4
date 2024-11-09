@@ -20,11 +20,10 @@
             <img id="pic" src="{{ post.profile_image }}" alt="Profile Image">
             <h4><a href="{% url 'profile' post.user%}">{{ post.user }}</a></h4>
             <div id="post-{{post.id}}">{{ post.post }}</div>
-            {% if user.is_authenticated %}
-            {% if post.user_id == user.id %}
-                <button id="edit-btn-{{ post.id }}" class="btn btn-link edit-btn" data-post-id="{{ post.id }}">Edit</button>
-            {% endif %}
             
+            {% if user.is_authenticated and post.user_id == user.id %}
+    <button id="edit-btn-{{ post.id }}" class="btn btn-link edit-btn" data-post-id="{{ post.id }}">Edit</button>
+{% endif %}
             <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{ post.id }}" data-post-id="{{ post.id }}"data-is-liked="{{ post.is_liked }}" >
                 <i class="fas fa-heart {% if post.is_liked %}text-danger{% endif %}"></i>
             </button>
@@ -39,7 +38,7 @@
                 Follow
             {% endif %}
         </button>
-        {% endif %}
+       
     
         <div id="like-count-{{ post.id }}" class="d-inline-block">{{ post.likes }}</div>
         <div>{{ post.timestamp }}</div>
