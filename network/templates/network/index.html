@@ -21,18 +21,29 @@
             <h4><a href="{% url 'profile' post.user%}">{{ post.user }}</a></h4>
             <div id="post-{{post.id}}">{{ post.post }}</div>
             {% if user.is_authenticated %}
-                {% if post.user.id == user.id %}    
-                    <div id="edit" onclick="edit('{{ post.id }}')" class="text-primary">Edit</div>
-                {% endif %}
-                <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{post.id}}" data-post-id="{{post.id}}">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <button class="btn mr-1 d-inline-block follow-btn" id="follow-btn-{{post.user.id}}" data-user-id="{{post.user.id}}">
-                    {% if user|user_is_following:post.id %} Unfollow {% else %} Follow {% endif %}
-                </button>
+            {% if post.user_id == user.id %}
+                <button id="edit-btn-{{ post.id }}" class="btn btn-link edit-btn" data-post-id="{{ post.id }}">Edit</button>
             {% endif %}
-            <div id="like-count-{{post.id}}" class="d-inline-block">{{ post.likes }}</div>
-            <div>{{ post.timestamp }}</div>
+            
+            <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{ post.id }}" data-post-id="{{ post.id }}"data-is-liked="{{ post.is_liked }}" >
+                <i class="fas fa-heart {% if post.is_liked %}text-danger{% endif %}"></i>
+            </button>
+    
+            <button class="btn mr-1 d-inline-block follow-btn" 
+            id="follow-btn-{{ post.user }}" 
+            data-user-id="{{ post.user_id }}" 
+            data-username="{{ post.user }}">
+            {% if user|user_is_following:post.user_id %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+        {% endif %}
+    
+        <div id="like-count-{{ post.id }}" class="d-inline-block">{{ post.likes }}</div>
+        <div>{{ post.timestamp }}</div>
+   
         </div>
         {% empty %}
             <li>No posts available</li>

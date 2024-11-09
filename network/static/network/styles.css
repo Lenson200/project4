@@ -8,7 +8,13 @@
     justify-content: center;
     margin-right: 5px;
 }
+.liked-heart {
+    color: red;
+}
 
+.unliked-heart {
+    color: black;
+}
 .like-btn i, .follow-btn i {
     font-size: 16px;
 }

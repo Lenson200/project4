@@ -17,7 +17,7 @@
     <div>
         {% for post in page_obj %}
             <div class="border border-secondary rounded p-3 mt-2">
-                <img src="{{ post.profile_image.url }}" alt="Profile Image">
+                <img id="pic" src="{{post.profile_image}}" alt="Profile Image">
                 <h4><a href="#">{{ post.user }}</a></h4>
                 <div id="post-{{post.id}}">{{ post.post }}</div>
                 {% if user.is_authenticated %}
@@ -27,9 +27,11 @@
                     <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{post.id}}" data-post-id="{{post.id}}">
                         <i class="fas fa-heart"></i>
                     </button>
-                    <button class="btn mr-1 d-inline-block follow-btn" id="follow-btn-{{post.user.id}}" data-user-id="{{post.user.id}}">
-                             Unfollow 
-                    </button>
+                    <button class="btn mr-1 d-inline-block follow-btn" 
+            id="follow-btn-{{ post.user }}" 
+            data-user-id="{{ post.user_id }}" 
+           data-username="{{ post.user }}">  Unfollow</button>
+        
                     <span id="followers-count-{{post.user.id}}" class="d-inline-block">{{ post.user.followers.count }}</span>
                 {% endif %}
                 <div id="like-count-{{post.id}}" class="d-inline-block">{{ post.likes }}</div>

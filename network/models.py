@@ -25,17 +25,21 @@ class Post(models.Model):
     like = models.ManyToManyField(User, blank=True, related_name="liked_user")
     images=models.ImageField(upload_to='post_images/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']), validate_image_size])
     
-    def serialize(self):
+    def serialize(self,current_user=None):
         user_profile = self.user.profile
         profile_image_url = user_profile.image.url if user_profile.image else None
+        is_liked = self.like.filter(id=current_user.id).exists() if current_user else False
         return {
             "id": self.id,
+            "user_id": self.user.id,
             "user": self.user.username,
             "post": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %H:%M:%S"),
             "likes": self.like.count(),
            "post_image": self.images.url if self.images else None,
-           "profile_image": profile_image_url
+           "profile_image": profile_image_url,
+            "is_liked": is_liked,
+         
         }
     
 class Like(models.Model):
@@ -50,4 +54,4 @@ class Follow(models.Model):
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
 
     def __str__(self):
-        return f"{self.follower.username} follows {self.following.username}"  
+        return f"{self.follower.username} follows {self.following.username}" 

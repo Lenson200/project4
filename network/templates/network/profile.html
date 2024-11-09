@@ -3,30 +3,60 @@
 {% block body %}
 
 {% if user.is_authenticated %}
-<h1>{{ profile_user.username }}'s Profile</h1>
-{% if user_profile.image %}
-<img id="pic" src="{{user_profile.image.url  }}" alt="Profile Image">
-{% else %}
-<p>No profile image available</p>
-<p>{{ user_profile.about }}</p>
-{% endif %}
-{% if user.is_authenticated and user != profile_user %}
-    <form action="{% url 'toggle_follow' profile_user.username %}" method="POST">
-        {% csrf_token %}
-        {% if is_following %}
-            <button type="submit">Unfollow</button>
+    <h1>{{ profile_user.username }}'s Profile</h1>
+
+    {% if user_profile %}
+        <!-- Existing profile (with image and about section) -->
+        {% if user_profile.image %}
+            <img id="pic" src="{{ user_profile.image.url }}" alt="Profile Image">
         {% else %}
-            <button type="submit">Follow</button>
+            <p>No profile image available</p>
         {% endif %}
-    </form>
-{% endif %}
+        <p>{{ user_profile.about }}</p>
+
+        <!-- Allow updating of profile only if it's the current user -->
+        {% if user == profile_user %}
+            <h2>Update Your Profile</h2>
+            <form action="{% url 'profile' profile_user.username %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }} <!-- Render the form fields -->
+                <button type="submit">Update Profile</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <!-- No profile, allow the user to create one -->
+        {% if user == profile_user %}
+            <h2>Create Your Profile</h2>
+            <form action="{% url 'profile' profile_user.username %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}  <!-- Render the form fields -->
+                <button type="submit">Create Profile</button>
+            </form>
+        {% else %}
+            <p>This user has not set up a profile yet.</p>
+        {% endif %}
+    {% endif %}
+
+    {% if user != profile_user %}
+        <!-- Show follow/unfollow button for other users' profiles -->
+        <form action="{% url 'toggle_follow' profile_user.username %}" method="POST">
+            {% csrf_token %}
+            {% if is_following %}
+                <button type="submit">Unfollow</button>
+            {% else %}
+                <button type="submit">Follow</button>
+            {% endif %}
+        </form>
+    {% endif %}
+
     <div class="ml-5" style="display: inline-block;">
         <div class="border border-secondary rounded p-2" style="display: inline-block;">Followers: {{ followers_count }}</div>
         <div class="border border-secondary rounded ml-2 p-2" style="display: inline-block;">Following: {{ following_count }}</div>
     </div>
+
     <div class="p-3">
         <h2>Posts</h2>
-        {% for post in posts %} 
+        {% for post in posts %}
             <div class="border border-secondary rounded p-3 mt-2">
                 <div>{{ post.content }}</div>
                 <div>{{ post.timestamp }}</div>
@@ -34,18 +64,15 @@
         {% empty %}
             <li>No posts available</li>
         {% endfor %}
-    
+
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">next</a>
         {% endif %}
-    
+
         {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}">previous</a>
         {% endif %}
     </div>
-    
-{% else %}
-    <h1>No Profile Yet</h1>
 {% endif %}
 
 {% endblock %}
