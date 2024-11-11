@@ -24,25 +24,25 @@
             {% if user.is_authenticated and post.user_id == user.id %}
     <button id="edit-btn-{{ post.id }}" class="btn btn-link edit-btn" data-post-id="{{ post.id }}">Edit</button>
 {% endif %}
+           <div>
             <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{ post.id }}" data-post-id="{{ post.id }}"data-is-liked="{{ post.is_liked }}" >
                 <i class="fas fa-heart {% if post.is_liked %}text-danger{% endif %}"></i>
             </button>
-    
-            <button class="btn mr-1 d-inline-block follow-btn" 
-            id="follow-btn-{{ post.user }}" 
-            data-user-id="{{ post.user_id }}" 
-            data-username="{{ post.user }}">
+        </div>
+        <div>
+            <button class="btn follow-btn follow-btn-{{ post.user }}" 
+        data-username="{{ post.user }}">
+            {% if user.is_authenticated %}
             {% if user|user_is_following:post.user_id %}
                 Unfollow
             {% else %}
                 Follow
             {% endif %}
+            {% endif %}
         </button>
-       
-    
+    </div>
         <div id="like-count-{{ post.id }}" class="d-inline-block">{{ post.likes }}</div>
         <div>{{ post.timestamp }}</div>
-   
         </div>
         {% empty %}
             <li>No posts available</li>

@@ -21,16 +21,11 @@ def index(request):
             return HttpResponseRedirect(reverse("index"))
 
     posts = Post.objects.all().order_by('-timestamp')
-    liked_posts = []
 
     # Only fetch liked posts if the user is authenticated
     if request.user.is_authenticated:
         liked_posts = list(Like.objects.filter(user=request.user).values_list('post_id', flat=True))
-        print("Liked Posts:", liked_posts)  # Debug print to check liked posts
-
     liked_posts_json = json.dumps(liked_posts)
-    print("Liked Posts JSON:", liked_posts_json)  # Debug print for JSON data
-
     serialized_posts = [post.serialize(current_user=request.user) for post in posts]
 
     paginator = Paginator(serialized_posts, 10)
@@ -38,8 +33,7 @@ def index(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, "network/index.html", {
-        "page_obj": page_obj,
-        "liked_posts_json": liked_posts_json,
+        "page_obj": page_obj
     })
 def login_view(request):
     if request.method == "POST":
@@ -154,6 +148,7 @@ def profile(request, username):
 
 @login_required
 def toggle_follow(request, username):
+
     profile_user = get_object_or_404(User, username=username)
 
     if request.user != profile_user:
@@ -169,7 +164,7 @@ def toggle_follow(request, username):
 
         # Return a JSON response indicating success
         return JsonResponse({"success": True, "is_following": is_following})
-    return redirect('profile', username=profile_user.username)   
+       
 
 @csrf_exempt
 @login_required
@@ -225,3 +220,23 @@ def like(request, post_id):
         return JsonResponse(post.serialize(), status=200)
 
     return JsonResponse({"error": "PUT request required."}, status=400)
+
+@login_required
+def redirect_to_profile(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    if request.method == "POST":
+        # Check if the request is an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Handle AJAX response
+            is_following = request.POST.get('is_following', 'false') == 'true'
+            profile_url = reverse('profile', kwargs={'username': profile_user.username})
+            return JsonResponse({
+                "success": True,
+                "is_following": is_following,
+                "profile_url": profile_url,
+                "redirect": True
+            })
+
+        # For a regular POST request, render the profile page
+        return redirect('profile', username=profile_user.username)

@@ -98,28 +98,40 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.log('Error:', error));
         });
     } 
-    function follow(username){
-        const followBtn = document.getElementById(`follow-btn-${username}`);
-
-        followBtn.addEventListener('click', () => {
-            const isFollowing = followBtn.textContent.trim() === 'Unfollow';
-
-            fetch(`/profile/${username}/follow/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    followBtn.textContent = isFollowing ? 'Follow' : 'Unfollow';
-                } else {
-                    console.log('Error:', data.message);
-                }
-            })
-            .catch(error => console.log('Error:', error));
+    function follow(username) {
+        // Select all follow buttons for the given username
+        const followButtons = document.querySelectorAll(`.follow-btn-${username}`);
+    
+        followButtons.forEach((followBtn) => {
+            followBtn.addEventListener('click', () => {
+                const isFollowing = followBtn.textContent.trim() === 'Unfollow';
+    
+                // Send the follow/unfollow request
+                fetch(`/profile/${username}/follow/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the text content for all follow buttons with the same username
+                        followButtons.forEach((btn) => {
+                            btn.textContent = isFollowing ? 'Follow' : 'Unfollow';
+                        });
+    
+                        // Reload the profile page if necessary
+                        if (window.location.pathname.includes(`/profile/${username}`)) {
+                            window.location.reload();
+                        }
+                    } else {
+                        console.log('Error:', data.message);
+                    }
+                })
+                .catch(error => console.log('Error:', error));
+            });
         });
     }
     // Initialize like functionality for each post
@@ -130,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize like functionality for each post
     document.querySelectorAll('.follow-btn').forEach(followButton => {
         const username = followButton.getAttribute('data-username');
-        follow(username); 
+        follow(username);
     });
     // Helper function to get the CSRF token
     function getCookie(name) {

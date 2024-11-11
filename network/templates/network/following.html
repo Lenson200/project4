@@ -27,11 +27,16 @@
                     <button class="btn mr-1 d-inline-block like-btn" id="like-btn-{{post.id}}" data-post-id="{{post.id}}">
                         <i class="fas fa-heart"></i>
                     </button>
-                    <button class="btn mr-1 d-inline-block follow-btn" 
-            id="follow-btn-{{ post.user }}" 
-            data-user-id="{{ post.user_id }}" 
-           data-username="{{ post.user }}">  Unfollow</button>
-        
+                    <div>
+                        <button class="btn follow-btn follow-btn-{{ post.user }}" 
+                    data-username="{{ post.user }}">
+                        {% if user.is_authenticated %}
+                            Unfollow
+                        {% else %}
+                            Follow
+                        {% endif %}
+                    </button>
+                </div>
                     <span id="followers-count-{{post.user.id}}" class="d-inline-block">{{ post.user.followers.count }}</span>
                 {% endif %}
                 <div id="like-count-{{post.id}}" class="d-inline-block">{{ post.likes }}</div>
