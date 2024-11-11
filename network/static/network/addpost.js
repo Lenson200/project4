@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Event listener for "Cancel" button click
         cancelButton.addEventListener('click', () => {
-            // Restore original content and hide textarea/buttons
             postContent.innerHTML = originalText;
             editButton.style.display = 'block';
             editBox.style.display = 'none';
@@ -99,9 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     } 
     function follow(username) {
-        // Select all follow buttons for the given username
         const followButtons = document.querySelectorAll(`.follow-btn-${username}`);
-    
         followButtons.forEach((followBtn) => {
             followBtn.addEventListener('click', () => {
                 const isFollowing = followBtn.textContent.trim() === 'Unfollow';
@@ -117,34 +114,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update the text content for all follow buttons with the same username
                         followButtons.forEach((btn) => {
                             btn.textContent = isFollowing ? 'Follow' : 'Unfollow';
                         });
-    
                         // Reload the profile page if necessary
                         if (window.location.pathname.includes(`/profile/${username}`)) {
                             window.location.reload();
                         }
+                    } else {if (data.message === "You cannot follow yourself.") {
+                        showErrorMessage("You cannot follow yourself.");
                     } else {
                         console.log('Error:', data.message);
+                    }
                     }
                 })
                 .catch(error => console.log('Error:', error));
             });
         });
     }
-    // Initialize like functionality for each post
+    //edit functionality for each post
+    document.querySelectorAll('.edit-btn').forEach(editButton => {
+        const postId = editButton.getAttribute('data-post-id');
+        edit(postId);
+    });
+    //like functionality for each post
     document.querySelectorAll('.like-btn').forEach(likeButton => {
         const postId = likeButton.getAttribute('data-post-id');
         like(postId);
     });
-    // Initialize like functionality for each post
+    //follow functionality for each post
     document.querySelectorAll('.follow-btn').forEach(followButton => {
         const username = followButton.getAttribute('data-username');
         follow(username);
     });
-    // Helper function to get the CSRF token
+    //Helper function to get the CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

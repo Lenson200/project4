@@ -164,6 +164,7 @@ def toggle_follow(request, username):
 
         # Return a JSON response indicating success
         return JsonResponse({"success": True, "is_following": is_following})
+    return JsonResponse({"success": False, "message": "You cannot follow yourself."})
        
 
 @csrf_exempt
@@ -220,23 +221,3 @@ def like(request, post_id):
         return JsonResponse(post.serialize(), status=200)
 
     return JsonResponse({"error": "PUT request required."}, status=400)
-
-@login_required
-def redirect_to_profile(request, username):
-    profile_user = get_object_or_404(User, username=username)
-
-    if request.method == "POST":
-        # Check if the request is an AJAX request
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            # Handle AJAX response
-            is_following = request.POST.get('is_following', 'false') == 'true'
-            profile_url = reverse('profile', kwargs={'username': profile_user.username})
-            return JsonResponse({
-                "success": True,
-                "is_following": is_following,
-                "profile_url": profile_url,
-                "redirect": True
-            })
-
-        # For a regular POST request, render the profile page
-        return redirect('profile', username=profile_user.username)

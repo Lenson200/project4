@@ -38,14 +38,19 @@
     {% endif %}
 
     {% if user != profile_user %}
-        <form action="{% url 'toggle_follow' profile_user.username %}" method="POST">
-            {% csrf_token %}
-            {% if is_following %}
-                <button type="submit">Unfollow</button>
-            {% else %}
-                <button type="submit">Follow</button>
-            {% endif %}
-        </form>
+    <button class="btn follow-btn follow-btn-{{ profile_user.username }}" 
+    data-username="{{profile_user.username}}">
+    {% if user.is_authenticated %}
+    {% if is_following %}
+        Unfollow
+    {% else %}
+        Follow
+    {% endif %}
+{% else %}
+    Follow
+{% endif %}
+    </button> 
+       
     {% endif %}
 
     <div class="ml-5" style="display: inline-block;">
